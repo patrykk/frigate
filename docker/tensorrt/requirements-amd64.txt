@@ -1,6 +1,7 @@
 # NVidia TensorRT Support (amd64 only)
 --extra-index-url 'https://pypi.nvidia.com'
 <<<<<<< HEAD
+<<<<<<< HEAD
 numpy < 1.24; platform_machine == 'x86_64'
 tensorrt == 8.6.1; platform_machine == 'x86_64'
 tensorrt_bindings == 8.6.1; platform_machine == 'x86_64'
@@ -15,6 +16,8 @@ nvidia-cufft-cu11==10.*; platform_machine == 'x86_64'
 nvidia-cufft-cu12==11.*; platform_machine == 'x86_64'
 onnx==1.18.*; platform_machine == 'x86_64'
 =======
+=======
+>>>>>>> 6205d7c7 (update vulkan, debian version, onnx, python, ov model build and more)
 cython==3.0.*; platform_machine == 'x86_64'
 nvidia_cuda_cupti_cu12==12.5.82; platform_machine == 'x86_64'
 nvidia-cublas-cu12==12.5.3.*; platform_machine == 'x86_64'
@@ -29,6 +32,24 @@ nvidia_cusparse_cu12==12.5.1.*; platform_machine == 'x86_64'
 nvidia_nccl_cu12==2.23.4; platform_machine == 'x86_64'
 nvidia_nvjitlink_cu12==12.5.82; platform_machine == 'x86_64'
 onnx==1.16.*; platform_machine == 'x86_64'
+<<<<<<< HEAD
 >>>>>>> d6991669 (Remove TensorRT Detector from AMD64 Build (#19030))
+=======
+=======
+numpy < 1.24; platform_machine == 'x86_64'
+tensorrt == 8.6.1; platform_machine == 'x86_64'
+tensorrt_bindings == 8.6.1; platform_machine == 'x86_64'
+cuda-python == 11.8.*; platform_machine == 'x86_64'
+cython == 3.1.*; platform_machine == 'x86_64'
+nvidia-cuda-runtime-cu12 == 12.1.*; platform_machine == 'x86_64'
+nvidia-cuda-runtime-cu11 == 11.8.*; platform_machine == 'x86_64'
+nvidia-cublas-cu11 == 11.11.3.6; platform_machine == 'x86_64'
+nvidia-cudnn-cu11 == 8.6.0.*; platform_machine == 'x86_64'
+nvidia-cudnn-cu12 == 9.5.0.*; platform_machine == 'x86_64'
+nvidia-cufft-cu11==10.*; platform_machine == 'x86_64'
+nvidia-cufft-cu12==11.*; platform_machine == 'x86_64'
+onnx==1.18.*; platform_machine == 'x86_64'
+>>>>>>> eb04842d (update vulkan, debian version, onnx, python, ov model build and more)
+>>>>>>> 6205d7c7 (update vulkan, debian version, onnx, python, ov model build and more)
 onnxruntime-gpu==1.22.*; platform_machine == 'x86_64'
 protobuf==3.20.3; platform_machine == 'x86_64'
