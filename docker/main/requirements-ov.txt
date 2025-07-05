@@ -1,3 +1,6 @@
-numpy
-tensorflow
-openvino-dev>=2024.0.0
+#numpy
+tf-nightly
+meson-python
+ninja>=1.8.2
+openvino-tokenizers
+#openvino-dev==2024.6.0

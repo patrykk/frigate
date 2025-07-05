@@ -12,16 +12,17 @@ apt-get -qq install --no-install-recommends -y \
     lbzip2 \
     procps vainfo \
     unzip locales tzdata libxml2 xz-utils \
-    python3.11 \
+    python3.13 \
     curl \
     lsof \
     jq \
     nethogs \
     libgl1 \
     libglib2.0-0 \
-    libusb-1.0.0
+    libusb-1.0.0 \
+    libopenblas0
 
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
 mkdir -p -m 600 /root/.gnupg
 
@@ -71,8 +72,8 @@ if [[ "${TARGETARCH}" == "amd64" ]]; then
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu jammy client" | tee /etc/apt/sources.list.d/intel-gpu-jammy.list
     apt-get -qq update
     apt-get -qq install --no-install-recommends --no-install-suggests -y \
-        intel-opencl-icd=24.35.30872.31-996~22.04 intel-level-zero-gpu=1.3.29735.27-914~22.04 intel-media-va-driver-non-free=24.3.3-996~22.04 \
-        libmfx1=23.2.2-880~22.04 libmfxgen1=24.2.4-914~22.04 libvpl2=1:2.13.0.0-996~22.04
+        intel-opencl-icd intel-level-zero-gpu intel-media-va-driver-non-free \
+        libmfx1 libmfxgen1 libvpl2
 
     rm -f /usr/share/keyrings/intel-graphics.gpg
     rm -f /etc/apt/sources.list.d/intel-gpu-jammy.list
@@ -86,6 +87,12 @@ fi
 # install vulkan
 apt-get -qq install --no-install-recommends --no-install-suggests -y \
     libvulkan1 mesa-vulkan-drivers
+
+#  openVino
+#wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /usr/share/keyrings/intel-archive-keyring.gpg
+#echo "deb [signed-by=/usr/share/keyrings/intel-archive-keyring.gpg] https://apt.repos.intel.com/openvino/2025 ubuntu24 main" | tee /etc/apt/sources.list.d/intel-openvino-2025.list
+#apt-get -qq update
+#apt-get -qq install -y openvino-libraries-2025.2.0 openvino-libraries-dev-2025.2.0 libopenvino-onnx-frontend-2025.2.0 libopenvino-tensorflow-frontend-2025.2.0 libopenvino-tensorflow-lite-frontend-2025.2.0 libopenvino-intel-gpu-plugin-2025.2.0 libopenvino-intel-npu-plugin-2025.2.0
 
 apt-get purge gnupg apt-transport-https xz-utils -y
 apt-get clean autoclean -y

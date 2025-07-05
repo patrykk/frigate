@@ -6,8 +6,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Globally set pip break-system-packages option to avoid having to specify it every time
 ARG PIP_BREAK_SYSTEM_PACKAGES=1
 
-ARG BASE_IMAGE=debian:12
-ARG SLIM_BASE=debian:12-slim
+ARG BASE_IMAGE=debian:testing
+ARG SLIM_BASE=debian:testing-slim
 
 # A hook that allows us to inject commands right after the base images
 ARG BASE_HOOK=
@@ -18,7 +18,7 @@ ARG BASE_HOOK
 
 RUN sh -c "$BASE_HOOK"
 
-FROM --platform=${BUILDPLATFORM} debian:12 AS base_host
+FROM --platform=${BUILDPLATFORM} debian:testing AS base_host
 ARG PIP_BREAK_SYSTEM_PACKAGES
 
 FROM ${SLIM_BASE} AS slim-base
@@ -75,12 +75,18 @@ ARG DEBIAN_FRONTEND
 
 # Install OpenVino Runtime and Dev library
 COPY docker/main/requirements-ov.txt /requirements-ov.txt
+
 RUN apt-get -qq update \
-    && apt-get -qq install -y wget python3 python3-dev python3-distutils gcc pkg-config libhdf5-dev \
+    && apt-get -qq install -y wget gpg \
+    && wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /usr/share/keyrings/intel-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/intel-archive-keyring.gpg] https://apt.repos.intel.com/openvino/2025 ubuntu24 main" | tee /etc/apt/sources.list.d/intel-openvino-2025.list \
+    && apt-get -qq update \
+    && apt-get -qq install -y python3 python3-dev python3-distutils-extra gcc pkg-config libhdf5-dev ninja-build  meson \
     && wget -q https://bootstrap.pypa.io/get-pip.py -O get-pip.py \
-    && sed -i 's/args.append("setuptools")/args.append("setuptools==77.0.3")/' get-pip.py \
+    && sed -i 's/args.append("setuptools")/args.append("setuptools==78.1.1")/' get-pip.py \
     && python3 get-pip.py "pip" \
-    && pip3 install -r /requirements-ov.txt
+    && pip3 install --break-system-packages -r /requirements-ov.txt \
+    && apt-get -qq install -y openvino-libraries-2025.2.0 openvino-libraries-dev-2025.2.0 libopenvino-onnx-frontend-2025.2.0 libopenvino-tensorflow-frontend-2025.2.0 libopenvino-tensorflow-lite-frontend-2025.2.0 libopenvino-intel-gpu-plugin-2025.2.0 libopenvino-intel-npu-plugin-2025.2.0 libopenvino-dev-2025.2.0
 
 # Get OpenVino Model
 RUN --mount=type=bind,source=docker/main/build_ov_model.py,target=/build_ov_model.py \
@@ -155,25 +161,26 @@ RUN apt-get -qq update \
     apt-transport-https wget \
     && apt-get -qq update \
     && apt-get -qq install -y \
-    python3.11 \
-    python3.11-dev \
+    python3.13 \
+    python3.13-dev \
     # opencv dependencies
     build-essential cmake git pkg-config libgtk-3-dev \
     libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
     libxvidcore-dev libx264-dev libjpeg-dev libpng-dev libtiff-dev \
-    gfortran openexr libatlas-base-dev libssl-dev\
+    gfortran openexr libssl-dev\
     libtbbmalloc2 libtbb-dev libdc1394-dev libopenexr-dev \
     libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev \
+    patchelf elfutils \
     # sqlite3 dependencies
     tclsh \
     # scipy dependencies
     gcc gfortran libopenblas-dev liblapack-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
 RUN wget -q https://bootstrap.pypa.io/get-pip.py -O get-pip.py \
-    && sed -i 's/args.append("setuptools")/args.append("setuptools==77.0.3")/' get-pip.py \
+    #&& sed -i 's/args.append("setuptools")/args.append("setuptools==77.0.3")/' get-pip.py \
     && python3 get-pip.py "pip"
 
 COPY docker/main/requirements.txt /requirements.txt
@@ -242,6 +249,12 @@ RUN wget -q https://bootstrap.pypa.io/get-pip.py -O get-pip.py \
 
 RUN --mount=type=bind,from=wheels,source=/wheels,target=/deps/wheels \
     pip3 install -U /deps/wheels/*.whl
+
+#fix
+RUN apt-get -qq update \
+    && apt-get -qq install patchelf elfutils vulkan-tools \
+    && find / -name "onnxruntime_pybind11_state.cpython-313-x86_64-linux-gnu.so" -exec patchelf --clear-execstack {} \; \
+    && apt-get clean autoclean -y
 
 COPY --from=deps-rootfs / /
 
