@@ -23,7 +23,11 @@ function set_libva_version() {
 
 echo "[INFO] Preparing Frigate..."
 set_libva_version
+<<<<<<< HEAD
 
+=======
+/usr/local/ulimit/set_ulimit.sh
+>>>>>>> 213dc97c (Set ulimit (#19086))
 echo "[INFO] Starting Frigate..."
 
 cd /opt/frigate || echo "[ERROR] Failed to change working directory to /opt/frigate"
