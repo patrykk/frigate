@@ -686,7 +686,6 @@ async def get_video_properties(
     return result
 
 
-<<<<<<< HEAD
 def process_logs(
     contents: str,
     service: Optional[str] = None,
@@ -753,7 +752,7 @@ def process_logs(
         log_lines.append(dedup_message)
 
     return len(log_lines), log_lines[start:end]
-=======
+
 def set_file_limit() -> None:
     # Newer versions of containerd 2.X+ impose a very low soft file limit of 1024
     # This applies to OSs like HA OS (see https://github.com/home-assistant/operating-system/issues/4110)
@@ -768,4 +767,4 @@ def set_file_limit() -> None:
     logger.info(
         f"File limit set. New soft limit: {new_soft}, Hard limit remains: {current_hard}"
     )
->>>>>>> 3bda6386 (Set ulimit with Python (#19105))
+
