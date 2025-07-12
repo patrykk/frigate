@@ -90,6 +90,8 @@ import {
   LuX,
 } from "react-icons/lu";
 import {
+  MdCenterFocusStrong,
+  MdCenterFocusWeak,
   MdNoPhotography,
   MdOutlineRestartAlt,
   MdPersonOff,
@@ -769,10 +771,10 @@ function PtzControlPanel({
           sendPtz("MOVE_DOWN");
           break;
         case "+":
-          sendPtz("ZOOM_IN");
+          sendPtz(modifiers.shift ? "FOCUS_IN" : "ZOOM_IN");
           break;
         case "-":
-          sendPtz("ZOOM_OUT");
+          sendPtz(modifiers.shift ? "FOCUS_OUT" : "ZOOM_OUT");
           break;
       }
     },
@@ -880,6 +882,40 @@ function PtzControlPanel({
             onTouchEnd={onStop}
           >
             <MdZoomOut />
+          </TooltipButton>
+        </>
+      )}
+      {ptz?.features?.includes("focus") && (
+        <>
+          <TooltipButton
+            label={t("ptz.focus.in.label")}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              sendPtz("FOCUS_IN");
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              sendPtz("FOCUS_IN");
+            }}
+            onMouseUp={onStop}
+            onTouchEnd={onStop}
+          >
+            <MdCenterFocusStrong />
+          </TooltipButton>
+          <TooltipButton
+            label={t("ptz.focus.out.label")}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              sendPtz("FOCUS_OUT");
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              sendPtz("FOCUS_OUT");
+            }}
+            onMouseUp={onStop}
+            onTouchEnd={onStop}
+          >
+            <MdCenterFocusWeak />
           </TooltipButton>
         </>
       )}
